@@ -1,0 +1,301 @@
+@import "tailwindcss";
+
+/* Theme tokens are CSS variables written by applyTheme(); these map them to Tailwind colours. */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: color-mix(in srgb, var(--accent) 16%, transparent);
+  --radius-card: var(--radius);
+  --font-sans: var(--font);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+/* Glass surfaces. Performance mode and high contrast swap blur for solid fills. */
+.glass {
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  border: 1px solid color-mix(in srgb, var(--line) 85%, transparent);
+}
+html[data-transparency="on"] .glass {
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+}
+html[data-perf="on"] .glass {
+  background: var(--surface);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html[data-contrast="high"] .glass {
+  background: var(--surface);
+  border-color: var(--text);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.25rem;
+  padding: 0 0.9rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.08s ease, filter 0.15s ease, opacity 0.15s ease;
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.07);
+}
+.btn-secondary {
+  background: color-mix(in srgb, var(--line) 70%, transparent);
+  color: var(--text);
+}
+.btn-secondary:hover:not(:disabled) {
+  background: var(--line);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--line) 60%, transparent);
+}
+.btn-danger {
+  background: #ef4444;
+  color: #fff;
+}
+.btn-sm {
+  height: 2rem;
+  padding: 0 0.65rem;
+  font-size: 0.8125rem;
+}
+
+.input {
+  height: 2.25rem;
+  padding: 0 0.75rem;
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--surface) 90%, var(--line));
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-size: 0.875rem;
+  outline: none;
+  min-width: 0;
+}
+textarea.input {
+  height: auto;
+  padding: 0.5rem 0.75rem;
+}
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.kbd {
+  font-family: ui-monospace, "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.4rem;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--line) 25%,
+    color-mix(in srgb, var(--line) 40%, var(--surface)) 50%,
+    var(--line) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.drop-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  outline: none;
+}
+.drop-zone:hover,
+.drop-zone:focus-visible {
+  border-color: var(--accent);
+}
+.drop-zone-over {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.progress-indeterminate {
+  animation: indeterminate 1.2s ease-in-out infinite;
+}
+@keyframes indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+/* Animated wallpapers use transform-only drift (GPU friendly). */
+.wallpaper-blob {
+  position: absolute;
+  width: 60vmax;
+  height: 60vmax;
+  left: -10vmax;
+  top: -10vmax;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 45%, transparent), transparent 65%);
+  filter: blur(40px);
+  will-change: transform;
+  animation: drift 22s ease-in-out infinite alternate;
+}
+@keyframes drift {
+  to {
+    transform: translate3d(12vw, 8vh, 0) scale(1.15);
+  }
+}
+
+/* Motion and performance switches */
+html[data-anim="off"] *,
+html[data-anim="off"] *::before,
+html[data-anim="off"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+html[data-perf="on"] .wallpaper-blob {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+html[data-density="compact"] .btn {
+  height: 1.9rem;
+}
+html[data-density="compact"] .input {
+  height: 2rem;
+}
+html[data-contrast="high"] {
+  --muted: var(--text);
+}
+html[data-contrast="high"] .input,
+html[data-contrast="high"] .drop-zone {
+  border-color: var(--text);
+}
+
+/* Viewer reading modes */
+.reading-dark canvas {
+  filter: invert(0.9) hue-rotate(180deg);
+}
+.reading-sepia canvas {
+  filter: sepia(0.45) contrast(0.95);
+}
+
+/* Desktop (Electron): the frameless window is moved by dragging the title bar. Buttons and inputs opt out. */
+html[data-desktop="true"] .app-titlebar {
+  -webkit-app-region: drag;
+}
+html[data-desktop="true"] .app-titlebar button,
+html[data-desktop="true"] .app-titlebar input {
+  -webkit-app-region: no-drag;
+}
+.win-btn {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2rem;
+  border-radius: 0.6rem;
+  color: var(--text);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.win-btn:hover {
+  background: color-mix(in srgb, var(--line) 70%, transparent);
+}
+.win-close:hover {
+  background: #e11d48;
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--muted) 35%, transparent);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}

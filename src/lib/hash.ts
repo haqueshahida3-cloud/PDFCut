@@ -1,0 +1,6 @@
+// SHA-256 helpers for duplicate-file detection. Uses Web Crypto (available in the browser and in Electron).
+
+export async function sha256Hex(bytes: Uint8Array): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', bytes as unknown as BufferSource);
+  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join('');
+}

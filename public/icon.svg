@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="page" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#e9e7ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <path d="M150 96h150l84 84v236a16 16 0 0 1-16 16H150a16 16 0 0 1-16-16V112a16 16 0 0 1 16-16z" fill="url(#page)"/>
+  <path d="M300 96v64a20 20 0 0 0 20 20h64" fill="none" stroke="#c4b5fd" stroke-width="10" stroke-linejoin="round"/>
+  <line x1="120" y1="290" x2="392" y2="290" stroke="#6366f1" stroke-width="14" stroke-linecap="round" stroke-dasharray="26 22"/>
+  <circle cx="142" cy="290" r="26" fill="none" stroke="#6366f1" stroke-width="12"/>
+  <circle cx="370" cy="290" r="26" fill="none" stroke="#6366f1" stroke-width="12"/>
+  <rect x="170" y="150" width="120" height="16" rx="8" fill="#c7d2fe"/>
+  <rect x="170" y="184" width="150" height="16" rx="8" fill="#c7d2fe"/>
+  <rect x="170" y="218" width="96" height="16" rx="8" fill="#c7d2fe"/>
+</svg>

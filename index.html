@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="PDFCut — free, private, offline PDF toolkit: split, merge, compress, convert, OCR, annotate and secure PDFs." />
+    <meta name="color-scheme" content="light dark" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' app: blob: data:; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' app: blob:; worker-src 'self' app: blob:; style-src 'self' 'unsafe-inline'; img-src 'self' app: blob: data:; font-src 'self' app: data:; connect-src 'self' app: blob: data: ws: wss:; media-src 'self' blob: data:; frame-src 'self' app: blob:; object-src 'none'; base-uri 'none'; form-action 'none'" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <title>PDFCut — Free Offline PDF Toolkit</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #f4f5f9; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif; }
+      @media (prefers-color-scheme: dark) { html, body { background: #0e1016; color: #e6e8ee; } }
+      .splash { position: fixed; inset: 0; display: grid; place-items: center; font-weight: 600; letter-spacing: -0.01em; opacity: 0.7; }
+    </style>
+  </head>
+  <body>
+    <div id="root"><div class="splash">PDFCut</div></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
