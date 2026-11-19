@@ -47,13 +47,13 @@ jobs:
       - name: Build Electron application
         run: npm run build:electron
 
-      - name: Check build files
+      - name: Check build folders
         shell: pwsh
         run: |
-          Write-Host "Checking build files..."
           if (!(Test-Path "dist")) {
             throw "dist folder was not created."
           }
+
           if (!(Test-Path "dist-electron")) {
             throw "dist-electron folder was not created."
           }
@@ -64,17 +64,17 @@ jobs:
       - name: Check NSIS output
         shell: pwsh
         run: |
-          if (Test-Path "release") {
-            Get-ChildItem "release" -Recurse -File
+          if (Test-Path "dist") {
+            Get-ChildItem "dist" -Filter "*.exe" -File
           } else {
-            throw "NSIS build did not create the release folder."
+            throw "dist folder not found."
           }
 
       - name: Upload Windows installer
         uses: actions/upload-artifact@v4
         with:
           name: PDFCut-Windows-Installer
-          path: release/*.exe
+          path: dist/*.exe
           if-no-files-found: error
 
       - name: Build Microsoft Store AppX
@@ -83,12 +83,11 @@ jobs:
       - name: List build output
         shell: pwsh
         run: |
-          if (Test-Path "release") {
-            Get-ChildItem "release" -Recurse -File
+          Write-Host "PDFCut build output:"
+          if (Test-Path "dist") {
+            Get-ChildItem "dist" -Recurse -File
           } else {
-            Write-Host "ERROR: release folder was not created."
-            Get-ChildItem -Force
-            throw "No release folder found."
+            throw "dist folder not found."
           }
 
       - name: Upload Microsoft Store package
@@ -96,8 +95,8 @@ jobs:
         with:
           name: PDFCut-Microsoft-Store
           path: |
-            release/*.appx
-            release/*.msix
+            dist/*.appx
+            dist/*.msix
           if-no-files-found: error
 
       - name: Attach files to GitHub Release
@@ -105,6 +104,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            release/*.exe
-            release/*.appx
-            release/*.msix
+            dist/*.exe
+            dist/*.appx
+            dist/*.msix
