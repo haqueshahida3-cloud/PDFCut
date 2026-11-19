@@ -1,3 +1,4 @@
+
 name: Build PDFCut for Windows
 
 on:
@@ -37,7 +38,8 @@ jobs:
 
       - name: Create Windows installer
         run: npx electron-builder --win nsis --x64
-      - name: Build Microsoft Store package
+
+      - name: Build Microsoft Store AppX
         run: npx electron-builder --win appx --x64
 
       - name: Upload Microsoft Store package
@@ -46,6 +48,7 @@ jobs:
           name: PDFCut-Microsoft-Store
           path: release/*.appx
           if-no-files-found: error
+
       - name: Upload Windows installer
         uses: actions/upload-artifact@v4
         with:
