@@ -1,3 +1,4 @@
+
 name: Build PDFCut for Windows
 
 on:
@@ -5,26 +6,17 @@ on:
   push:
     branches:
       - main
-      - master
-    tags:
-      - "v*"
 
 permissions:
-  contents: write
-
-concurrency:
-  group: windows-${{ github.ref }}
-  cancel-in-progress: true
+  contents: read
 
 jobs:
   build-windows:
     runs-on: windows-latest
     timeout-minutes: 45
+
     env:
-      # code signing nei, tai auto-discovery bondho (na hole warning/error ashte pare)
       CSC_IDENTITY_AUTO_DISCOVERY: "false"
-      # electron-builder nijer theke publish korbe na
-      GH_TOKEN: ""
 
     steps:
       - name: Checkout source
@@ -36,23 +28,30 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Validate package.json
+        run: node -e "JSON.parse(require('fs').readFileSync('package.json', 'utf8')); console.log('JSON OK')"
+
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
       - name: Generate icons
         run: npm run icons
 
-      - name: Build web app
+      - name: Build web application
         run: npm run build
 
       - name: Build Electron main process
         run: npm run build:electron
 
-      - name: Build Windows installer (NSIS) and Microsoft Store (AppX)
-        run: npx electron-builder --win nsis appx --x64 --publish never
+      - name: Verify Electron Builder configuration
+        run: npx electron-builder --help
 
-      - name: List build output
-        run: Get-ChildItem release -Recurse -Include *.exe,*.appx | Select-Object FullName
+      - name: Build Windows NSIS installer
+        run: npx electron-builder --win nsis --x64 --publish never
+
+      - name: List NSIS output
+        shell: pwsh
+        run: Get-ChildItem release -Filter *.exe
 
       - name: Upload Windows installer
         uses: actions/upload-artifact@v4
@@ -61,17 +60,16 @@ jobs:
           path: release/*.exe
           if-no-files-found: error
 
+      - name: Build Microsoft Store AppX package
+        run: npx electron-builder --win appx --x64 --publish never
+
+      - name: List AppX output
+        shell: pwsh
+        run: Get-ChildItem release -Filter *.appx
+
       - name: Upload Microsoft Store package
         uses: actions/upload-artifact@v4
         with:
           name: PDFCut-Microsoft-Store
           path: release/*.appx
           if-no-files-found: error
-
-      - name: Attach to GitHub Release (only on v* tag)
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            release/*.exe
-            release/*.appx
