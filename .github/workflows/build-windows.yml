@@ -6,9 +6,16 @@ on:
   push:
     branches:
       - main
+      - master
+    tags:
+      - "v*"
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: windows-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-windows:
@@ -28,9 +35,6 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Validate package.json
-        run: node -e "JSON.parse(require('fs').readFileSync('package.json', 'utf8')); console.log('JSON OK')"
-
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
@@ -40,18 +44,31 @@ jobs:
       - name: Build web application
         run: npm run build
 
-      - name: Build Electron main process
+      - name: Build Electron application
         run: npm run build:electron
 
-      - name: Verify Electron Builder configuration
-        run: npx electron-builder --help
+      - name: Check build files
+        shell: pwsh
+        run: |
+          Write-Host "Checking build files..."
+          if (!(Test-Path "dist")) {
+            throw "dist folder was not created."
+          }
+          if (!(Test-Path "dist-electron")) {
+            throw "dist-electron folder was not created."
+          }
 
-      - name: Build Windows NSIS installer
+      - name: Build Windows installer (NSIS)
         run: npx electron-builder --win nsis --x64 --publish never
 
-      - name: List NSIS output
+      - name: Check NSIS output
         shell: pwsh
-        run: Get-ChildItem release -Filter *.exe
+        run: |
+          if (Test-Path "release") {
+            Get-ChildItem "release" -Recurse -File
+          } else {
+            throw "NSIS build did not create the release folder."
+          }
 
       - name: Upload Windows installer
         uses: actions/upload-artifact@v4
@@ -60,16 +77,34 @@ jobs:
           path: release/*.exe
           if-no-files-found: error
 
-      - name: Build Microsoft Store AppX package
+      - name: Build Microsoft Store AppX
         run: npx electron-builder --win appx --x64 --publish never
 
-      - name: List AppX output
+      - name: List build output
         shell: pwsh
-        run: Get-ChildItem release -Filter *.appx
+        run: |
+          if (Test-Path "release") {
+            Get-ChildItem "release" -Recurse -File
+          } else {
+            Write-Host "ERROR: release folder was not created."
+            Get-ChildItem -Force
+            throw "No release folder found."
+          }
 
       - name: Upload Microsoft Store package
         uses: actions/upload-artifact@v4
         with:
           name: PDFCut-Microsoft-Store
-          path: release/*.appx
+          path: |
+            release/*.appx
+            release/*.msix
           if-no-files-found: error
+
+      - name: Attach files to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/*.exe
+            release/*.appx
+            release/*.msix
