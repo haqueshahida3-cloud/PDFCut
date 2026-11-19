@@ -102,3 +102,19 @@ deb:
   # Our scripts start from the electron-builder defaults and add the launcher handling (see the files).
   afterInstall: build/after-install.tpl
   afterRemove: build/after-remove.tpl
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: build/icon.ico
+  artifactName: "${productName}-Setup-${version}.${ext}"
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: PDFCut

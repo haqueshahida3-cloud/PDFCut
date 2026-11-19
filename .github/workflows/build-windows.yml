@@ -1,0 +1,46 @@
+name: Build PDFCut for Windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate icons
+        run: npm run icons
+
+      - name: Build application
+        run: npm run build
+
+      - name: Build Electron CLI
+        run: npm run build:electron
+
+      - name: Create Windows installer
+        run: npx electron-builder --win nsis --x64
+
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: PDFCut-Windows-Installer
+          path: release/*.exe
+          if-no-files-found: error
