@@ -68,3 +68,14 @@
   "homepage": "https://pdfcut.local",
   "desktopName": "pdfcut.desktop"
 }
+,
+"build": {
+  "appId": "NAHER.PDFCut",
+  "productName": "PDFCut",
+  "appx": {
+    "identityName": "NAHER.PDFCut",
+    "publisher": "CN=8E119CC8-6BE6-4B1F-BFE0-F2432A28428D",
+    "publisherDisplayName": "NAHER",
+    "displayName": "PDFCut"
+  }
+}
